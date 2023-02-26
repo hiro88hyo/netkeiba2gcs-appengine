@@ -1,0 +1,22 @@
+runtime: ruby25
+
+entrypoint: bundle exec rackup -s Puma -p $PORT
+
+instance_class: F1
+
+automatic_scaling:
+  min_idle_instances: 1
+  max_idle_instances: 1
+  min_pending_latency: 3s
+  max_pending_latency: 5s
+  max_concurrent_requests: 5
+  target_cpu_utilization: 0.95
+  max_instances: 1
+
+env_variables:
+  RACK_ENV: production
+
+handlers:
+- url: /images
+  static_dir: public/images
+  secure: always
