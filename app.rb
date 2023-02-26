@@ -3,16 +3,18 @@ require 'sinatra/reloader' if development?
 require './RaceScraper'
 
 helpers do
+  # HTML エスケープ用にエイリアスを作成
   include Rack::Utils
   alias_method :h, :escape_html
 end
 
-# 404 Not Found
+# 404 Not Found 時
 not_found do
   @error_message = 'Page Not Found'
   erb :error
 end
 
+# エラー発生時
 error do
   @error_message = h env['sinatra.error'].message
   erb :error
@@ -46,18 +48,23 @@ get '/raceinfo/:race_id' do
   erb :raceinfo, :locals => vars
 end
 
+# Hello メッセージ表示ページ
 get '/hello/:message?' do
 
+  # q パラメータがあるときはエラーを発生させる
   raise params[:q] if params[:q]
 
+  # Ruby のバージョンをセット
   @ruby_desc = RUBY_DESCRIPTION
 
+  # メッセージをセット
   if params['message'] != nil
     @message = params['message']
   else
     @message = 'Hello, world!'
   end
 
+  # 環境情報を取得
 
   require "google/cloud/storage"
 
@@ -80,5 +87,6 @@ get '/hello/:message?' do
     :test => settings.test?,
     :c    => c
   }
+  # HTML を表示
   erb :hello, :locals => env
 end
